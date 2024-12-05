@@ -37,7 +37,6 @@ class LINCReasoner:
         """Provide explanation for the reasoning process"""
         explanation = "Reasoning Process:\n"
         
-        # Check premises
         explanation += "\nChecking premises:\n"
         all_premises_true = True
         for premise in premises:
@@ -72,34 +71,48 @@ class LINCReasoner:
         return explanation
 
 def test_reasoner():
-    """Function to test the reasoner's capabilities"""
+    """Function to test the reasoner's capabilities with the new knowledge base"""
     reasoner = LINCReasoner()
     
-    # Load the test knowledge base
+    # Load the knowledge base
     print("Loading knowledge base...")
-    reasoner.load_knowledge_base("test_kb.pl")
+    reasoner.load_knowledge_base("test_kb.pl")  # THIS IS WHERE test-kb.pl gets loaded in
     
-    # Test 1: Basic fact query
-    print("\nTest 1: Basic fact query")
-    result = reasoner.query("student(alex_thompson)")
-    print(f"Is alex_thompson a student? {bool(result)}")
+    # Test 1: Basic student fact query
+    print("\nTest 1: Basic student query")
+    result = reasoner.query("student(varnit_b)")
+    print(f"Is Varnit a student? {bool(result)}")
     
-    # Test 2: Rule-based query
-    print("\nTest 2: Rule-based query")
-    result = reasoner.query("academic(alex_thompson)")
-    print(f"Is alex_thompson an academic? {bool(result)}")
+    # Test 2: Programmer rule query
+    print("\nTest 2: Programmer rule query")
+    result = reasoner.query("programmer(varnit_b)")
+    print(f"Is Varnit a programmer? {bool(result)}")
     
-    # Test 3: Logical entailment
-    print("\nTest 3: Logical entailment")
-    premises = ["student(alex_thompson)"]
-    conclusion = "academic(alex_thompson)"
+    # Test 3: Study buddies relationship
+    print("\nTest 3: Study buddies relationship")
+    result = reasoner.query("study_buddies(varnit_b, kevin_g)")
+    print(f"Are Varnit and Kevin study buddies? {bool(result)}")
+    
+    # Test 4: Logical entailment example
+    print("\nTest 4: Logical entailment")
+    premises = ["student(varnit_b)", "likes_coding(varnit_b)"]
+    conclusion = "programmer(varnit_b)"
     result = reasoner.check_logical_entailment(premises, conclusion)
     print(f"Does {conclusion} follow from {premises}? {result}")
     
-    # Test 4: Explanation
-    print("\nTest 4: Explanation of reasoning")
+    # Test 5: Explanation of study buddies reasoning
+    print("\nTest 5: Explanation of study buddies reasoning")
+    premises = ["classmates(varnit_b, kevin_g)", "likes_coding(varnit_b)", "likes_coding(kevin_g)"]
+    conclusion = "study_buddies(varnit_b, kevin_g)"
     explanation = reasoner.explain_reasoning(premises, conclusion)
     print(explanation)
+
+    # Additional test: Find all study buddies
+    print("\nTest 6: Finding all study buddies")
+    study_buddies_pairs = reasoner.query("study_buddies(X, Y)")
+    print("Study buddy pairs:")
+    for pair in study_buddies_pairs:
+        print(f"- {pair['X']} and {pair['Y']}")
 
 if __name__ == "__main__":
     test_reasoner()
